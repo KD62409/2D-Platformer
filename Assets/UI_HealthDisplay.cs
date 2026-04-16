@@ -12,11 +12,19 @@ public class UI_HealthDisplay : MonoBehaviour
     void Start()
     {
         healthComponent.OnHealthChanged += OnHealthChaged;
+        healthComponent.OnHealthInitialez += OnHealthInitialized;
     }
 
+    private void OnHealthInitialized(float newHealth)
+    {
+
+        textComponent.text = newHealth.ToString();
+    }
     private void OnHealthChaged(float newHealth, float amountChanged)
     {
         //Debug.Log(newHealth + ":" + amountChanged);
         textComponent.text = newHealth.ToString();
+
+
     }
 }
