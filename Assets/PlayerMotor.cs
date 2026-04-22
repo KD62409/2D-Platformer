@@ -82,6 +82,16 @@ public class PlayerMotor : MonoBehaviour
 
     private void OnHealthChanged(int oldHealth, int amountChanged, Vector3 origin)
     {
-        _rigidbody2D.AddForce(new Vector3(origin.x - transform.position.x,0,0) * enemyHitForce, ForceMode2D.Impulse);
+        _rigidbody2D.AddForce(new Vector3(origin.x - transform.position.x, 0, 0) * enemyHitForce, ForceMode2D.Impulse);
     }
+
+    private void OnMoneyChanged(int oldMoney, int amountChanged, Vector3 origin)
+    {
+        _rigidbody2D.AddForce(new Vector3(origin.x - transform.position.x, 0, 0) * enemyHitForce, ForceMode2D.Impulse);
+
+
+
+
+    }
+
 }
