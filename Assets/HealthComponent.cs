@@ -1,6 +1,8 @@
- using System;
+using System;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class HealthComponent : MonoBehaviour
 {
@@ -16,27 +18,35 @@ public class HealthComponent : MonoBehaviour
         currentHealth = maxHealth;
         OnHealthInitialez?.Invoke(currentHealth);
     }
-    
+
     public void ReceiveDamage(float amount)
-    
-    {  if (!invincibility)
+
+    { if (!invincibility)
         {
             currentHealth -= amount;
             OnHealthChanged?.Invoke(currentHealth, amount);
             invincibility = true;
             StartCoroutine(ResetInvincibility(3));
         }
-        
+    if(currentHealth <=0)
+        {
+            SceneManager.LoadScene("EndScene");
+        }
+
     }
+    
+    
+    
     IEnumerator ResetInvincibility(float resetTime)
     {
         yield return new WaitForSeconds(resetTime);
         invincibility = false;
     }
+    
+    
 
 
-
-    public void AddHealth(float amount)
+public void AddHealth(float amount)
     {
         currentHealth += amount;
         OnHealthChanged?.Invoke(currentHealth, amount);
