@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Runtime.CompilerServices;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -15,17 +16,33 @@ public class PlayerMotor : MonoBehaviour
     public float enemyHitForce = 50;
     public float DashForce = 10;
     private Rigidbody2D _rigidbody2D;
+    private Animator _animator;
     private bool _canJump = true;
     private bool _canDash = true;
+    private float _iniScale;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
+
+    public int maxJump = 2;
+    private int currentJumps;
     private void Start()
     {
         _rigidbody2D = GetComponent<Rigidbody2D>();
+        _animator = GetComponent<Animator>();
+        _iniScale = transform.localScale.x;
     }
     // Update is called once per frame
     private void FixedUpdate()
     {
-        MovePlayer();
+        //Check if moving right
+        if(direction.x > 0)
+        {
+            transform.localScale = new Vector3(_iniScale, transform.localScale.y, transform.localScale.z);
+        } else if(direction.x <0 )
+        {
+            transform.localScale = new Vector3(-_iniScale, transform.localScale.y, transform.localScale.z);
+        }
+
+            MovePlayer();
         LimitMaxSpeed();
     }
 
@@ -52,6 +69,7 @@ public class PlayerMotor : MonoBehaviour
         if (direction.x != 0)
         {
             _rigidbody2D.AddForce(new Vector2(direction.x * acceleration, 0));
+            _animator.SetBool("isMoving", true);
         }
         //if not accelerating start slowing down
         else if (_rigidbody2D.linearVelocityX != 0)
@@ -60,12 +78,19 @@ public class PlayerMotor : MonoBehaviour
             if (_rigidbody2D.linearVelocityX < stoppingPoint && _rigidbody2D.linearVelocityX > -stoppingPoint)
             {
                 _rigidbody2D.linearVelocity = new Vector2(0.0f, _rigidbody2D.linearVelocityY);
+                
+
             }
             //add stopping force
             else
             {
                 _rigidbody2D.AddForce(new Vector2(-_rigidbody2D.linearVelocityX * stoppingForce, 0));
             }
+
+        }
+        if(direction.x == 0)
+        {
+            _animator.SetBool("isMoving", false);
         }
     }
 
@@ -79,10 +104,18 @@ public class PlayerMotor : MonoBehaviour
         if (_canJump)
         {
             _rigidbody2D.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-            _canJump = false;
+            currentJumps++ ;
+            if(currentJumps >= maxJump)
+            {
+                _canJump = false;
+            }
         }
     }
-
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        _canJump = true;
+        currentJumps = 0;
+    }
     private void OnDash() 
     {
         //Debug.Log("OnDash");
@@ -105,10 +138,6 @@ public class PlayerMotor : MonoBehaviour
     {
         yield return new WaitForSeconds(cooldown);
         _canDash = true;
-    }
-    void OnCollisionEnter2D(Collision2D collision)
-    {
-        _canJump = true;
     }
 
     private void OnHealthChanged(int oldHealth, int amountChanged, Vector3 origin)

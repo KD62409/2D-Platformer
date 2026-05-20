@@ -8,7 +8,7 @@ public class teleprt : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        collision.gameObject.SetActive(false);
+        
         collision.transform.position = teleport.transform.position;
         StartCoroutine(TeleportPlayer(1.0f));
 
