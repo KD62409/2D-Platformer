@@ -41,8 +41,8 @@ public class PlayerMotor : MonoBehaviour
         {
             transform.localScale = new Vector3(-_iniScale, transform.localScale.y, transform.localScale.z);
         }
-
-            MovePlayer();
+        _animator.SetFloat("SpeedY", _rigidbody2D.linearVelocityY);
+        MovePlayer();
         LimitMaxSpeed();
     }
 
