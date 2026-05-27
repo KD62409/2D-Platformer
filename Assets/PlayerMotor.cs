@@ -20,6 +20,9 @@ public class PlayerMotor : MonoBehaviour
     private bool _canJump = true;
     private bool _canDash = true;
     private float _iniScale;
+    private bool DoubleJump;
+    
+    
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
     public int maxJump = 2;
@@ -99,22 +102,39 @@ public class PlayerMotor : MonoBehaviour
         direction = value.Get<Vector2>();
     }
 
+    
     private void OnJump()
     {
-        if (_canJump)
+       
+        if (currentJumps < maxJump)
         {
-            _rigidbody2D.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-            currentJumps++ ;
-            if(currentJumps >= maxJump)
+            Debug.Log(currentJumps);
+
+            _rigidbody2D.linearVelocity =
+                new Vector2(_rigidbody2D.linearVelocityX, 0);
+
+            _rigidbody2D.AddForce(
+                Vector2.up * jumpForce,
+                ForceMode2D.Impulse
+            );
+
+            if (currentJumps == 0)
             {
-                _canJump = false;
+                _animator.SetTrigger("Jump");
             }
+            else
+            {
+                _animator.SetTrigger("DoubleJump");
+            }
+
+            currentJumps++;
         }
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
         _canJump = true;
         currentJumps = 0;
+        _animator.ResetTrigger("DoubleJump");
     }
     private void OnDash() 
     {
