@@ -52502,7 +52502,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2124b03a622fef140862eb73be26f24d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 1
+  health: 20
 --- !u!1001 &2048003845
 PrefabInstance:
   m_ObjectHideFlags: 0
